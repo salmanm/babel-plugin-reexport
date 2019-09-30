@@ -20,5 +20,11 @@
     "mocha": "^5.2.0"
   },
   "author": "Salman Mitha <salmanmitha@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "babel",
+    "plugin",
+    "reexport",
+    "re-export"
+  ]
 }
