@@ -22,6 +22,7 @@ function fn (path, state, t) {
   const nodes = program.get('body');
   const hasExportDefault = nodes.some(n => n.isExportDefaultDeclaration());
   const hasExportNamed = nodes.some(n => n.isExportNamedDeclaration());
+  const hasExportAll = nodes.some(n => n.isExportAllDeclaration());
   const namedDefaultNode = hasExportNamed && nodes.find(n => {
     if (!n.isExportNamedDeclaration() || !n.has('specifiers')) return false;
 
@@ -36,19 +37,28 @@ function fn (path, state, t) {
   const fileName = Path.basename(filePath, Path.extname(filePath));
   const exportPath = Path.join(pkgDir, fileName);
 
-  let exportNode
+  const exportNodes = [];
 
   if (hasExportDefault) {
-    exportNode = getExportNamed(exportPath, ['default'], t)
-  } else if (namedDefaultNode) {
-    const identifiers = namedDefaultNode.get('specifiers').map(s => s.node.exported.name)
-    exportNode = getExportNamed(exportPath, identifiers, t)
-  } else {
-    exportNode = getExportAll(exportPath, t);
+    exportNodes.push(
+      getExportNamed(exportPath, ['default'], t)
+    );
+  }
+
+  if (namedDefaultNode) {
+    exportNodes.push(
+      getExportNamed(exportPath, namedDefaultNode.get('specifiers').map(s => s.node.exported.name), t)
+    );
+  }
+
+  if (hasExportAll || (hasExportNamed && !namedDefaultNode)) {
+    exportNodes.push(
+      getExportAll(exportPath, t)
+    );
   }
 
   nodes.forEach(n => n.remove());
-  program.pushContainer('body', exportNode);
+  exportNodes.forEach(n => program.pushContainer('body', n));
 }
 
 /** Generates line like `export { a, b } from 'pkg-dir/file'` */
