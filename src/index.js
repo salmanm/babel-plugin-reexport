@@ -20,14 +20,14 @@ function fn (path, state, t) {
   const program = path.scope.getProgramParent().path;
 
   const nodes = program.get('body');
-  const hasNamedExport = nodes.some(n => n.isExportNamedDeclaration());
-  const hasDefaultExport = nodes.some(n => n.isExportDefaultDeclaration());
-  const hasNamedDefaultExport = hasNamedExport && nodes.some(n => {
+  const hasExportDefault = nodes.some(n => n.isExportDefaultDeclaration());
+  const hasExportNamed = nodes.some(n => n.isExportNamedDeclaration());
+  const namedDefaultNode = hasExportNamed && nodes.find(n => {
     if (!n.isExportNamedDeclaration() || !n.has('specifiers')) return false;
 
     const specifiers = n.get('specifiers');
     const { exported } = specifiers[0].node;
-    return specifiers.length === 1 && exported.name === 'default';
+    return exported.name === 'default';
   });
 
   const { moduleDir } = { ...defaultOpts, ...state.opts };
@@ -36,21 +36,29 @@ function fn (path, state, t) {
   const fileName = Path.basename(filePath, Path.extname(filePath));
   const exportPath = Path.join(pkgDir, fileName);
 
-  const exportNode = hasDefaultExport || hasNamedDefaultExport ? getDefaultExport(exportPath, t) : getNamedExport(exportPath, t);
+  let exportNode
+
+  if (hasExportDefault) {
+    exportNode = getExportNamed(exportPath, ['default'], t)
+  } else if (namedDefaultNode) {
+    const identifiers = namedDefaultNode.get('specifiers').map(s => s.node.exported.name)
+    exportNode = getExportNamed(exportPath, identifiers, t)
+  } else {
+    exportNode = getExportAll(exportPath, t);
+  }
 
   nodes.forEach(n => n.remove());
   program.pushContainer('body', exportNode);
 }
 
-/** Generates line like `export default from 'pkg-dir/file'` */
-function getDefaultExport(exportPath, t) {
-  const defaultIdentifier = t.identifier('default');
-  const specifiers = [t.exportSpecifier(defaultIdentifier, defaultIdentifier)];
+/** Generates line like `export { a, b } from 'pkg-dir/file'` */
+function getExportNamed(exportPath, identifiers, t) {
+  const specifiers = identifiers.map(name => t.exportSpecifier(t.identifier(name), t.identifier(name)))
 
   return t.exportNamedDeclaration(null, specifiers, t.stringLiteral(exportPath));
 }
 
 /** Generates line like `export * from 'pkg-dir/file'` */
-function getNamedExport(exportPath, t) {
+function getExportAll(exportPath, t) {
   return t.exportAllDeclaration(t.stringLiteral(exportPath));
 }
