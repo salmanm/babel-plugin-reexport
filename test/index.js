@@ -16,12 +16,32 @@ const babelOptions = {
   plugins: [
     [plugin, { moduleDir }]
   ],
+  sourceType: 'unambiguous',
   babelrc: false
 }
 
-describe('Re-exports given module', () => {
+describe('Re-exports given es pkg', () => {
   const pkgDir = path.join(__dirname, 'fixtures', moduleDir, 'dummy-pkg')
   const expDir = path.join(__dirname, 'fixtures', 'expected', 'dummy-pkg')
+
+  fs.readdirSync(pkgDir)
+    .filter(d => !d.startsWith('.'))
+    .map((dirName) => {
+      it(`should re-export ${dirName}`, () => {
+        const actualPath = path.join(pkgDir, dirName, 'actual.js')
+        const expectedPath = path.join(expDir, dirName, 'expected.js')
+
+        const actual = transformFileSync(actualPath, babelOptions).code
+        const expected = fs.readFileSync(expectedPath, 'utf8')
+
+        assert.strictEqual(actual.trim(), expected.trim())
+      })
+    })
+})
+
+describe('Re-exports given cjs pkg', () => {
+  const pkgDir = path.join(__dirname, 'fixtures', moduleDir, 'cjs')
+  const expDir = path.join(__dirname, 'fixtures', 'expected', 'cjs')
 
   fs.readdirSync(pkgDir)
     .filter(d => !d.startsWith('.'))
