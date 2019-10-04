@@ -29,6 +29,8 @@ export default function transformESM (program, state, { exportPath }, t) {
 
 /** Generates line like `exports.fn = require('pkg-dir/file').fn` */
 function getExportNamed (exportPath, leftExpr, t) {
+  const exportIdentifier = leftExpr.property.value || leftExpr.property.name
+
   return t.expressionStatement(
     t.assignmentExpression(
       '=',
@@ -36,7 +38,7 @@ function getExportNamed (exportPath, leftExpr, t) {
       t.memberExpression(
         t.callExpression(
           t.identifier('require'), [t.stringLiteral(exportPath)]
-        ), t.identifier(leftExpr.property.name)
+        ), t.identifier(exportIdentifier)
       )
     )
   )
