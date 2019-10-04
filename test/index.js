@@ -42,8 +42,8 @@ describe('Re-exports given cjs pkg', () => {
 })
 
 describe('Re-exports given es pkg', () => {
-  const pkgDir = path.join(__dirname, 'fixtures', moduleDir, 'dummy-pkg')
-  const expDir = path.join(__dirname, 'fixtures', 'expected', 'dummy-pkg')
+  const pkgDir = path.join(__dirname, 'fixtures', moduleDir, 'esm')
+  const expDir = path.join(__dirname, 'fixtures', 'expected', 'esm')
 
   glob
     .sync('*/*', { cwd: pkgDir })
