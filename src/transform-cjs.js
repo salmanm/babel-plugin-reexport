@@ -1,6 +1,14 @@
-export default function transformESM (program, state, { exportPath }, t) {
+import { template } from '@babel/core'
+
+const moduleExpr = template.ast`
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+`
+
+export default function transformCJS (program, state, { exportPath }, t) {
   const nodes = program.get('body')
-  const exportNodes = []
+  const exportNodes = [moduleExpr]
 
   nodes.forEach((n) => {
     if (!n.isExpressionStatement()) return
