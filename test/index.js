@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 
 import path from 'path'
+import glob from 'glob'
 import fs from 'fs'
 import assert from 'assert'
 import { transformFileSync } from '@babel/core'
@@ -14,21 +15,43 @@ const babelOptions = {
     ['@babel/react']
   ],
   plugins: [
-    [plugin, { moduleDir }]
+    [plugin, { moduleDir, ignore: /index.js$/ }]
   ],
+  sourceType: 'unambiguous',
   babelrc: false
 }
 
-describe('Re-exports given module', () => {
-  const pkgDir = path.join(__dirname, 'fixtures', moduleDir, 'dummy-pkg')
-  const expDir = path.join(__dirname, 'fixtures', 'expected', 'dummy-pkg')
+describe('Re-exports given cjs pkg', () => {
+  const pkgDir = path.join(__dirname, 'fixtures', moduleDir, 'cjs')
+  const expDir = path.join(__dirname, 'fixtures', 'expected', 'cjs')
 
-  fs.readdirSync(pkgDir)
+  glob
+    .sync('*/*', { cwd: pkgDir })
     .filter(d => !d.startsWith('.'))
-    .map((dirName) => {
-      it(`should re-export ${dirName}`, () => {
-        const actualPath = path.join(pkgDir, dirName, 'actual.js')
-        const expectedPath = path.join(expDir, dirName, 'expected.js')
+    .map((file) => {
+      it(`should re-export ${file}`, () => {
+        const actualPath = path.join(pkgDir, file)
+        const expectedPath = path.join(expDir, path.dirname(file), 'expected.js')
+
+        const actual = transformFileSync(actualPath, babelOptions).code
+        const expected = fs.readFileSync(expectedPath, 'utf8')
+
+        assert.strictEqual(actual.trim(), expected.trim())
+      })
+    })
+})
+
+describe('Re-exports given es pkg', () => {
+  const pkgDir = path.join(__dirname, 'fixtures', moduleDir, 'esm')
+  const expDir = path.join(__dirname, 'fixtures', 'expected', 'esm')
+
+  glob
+    .sync('*/*', { cwd: pkgDir })
+    .filter(d => !d.startsWith('.'))
+    .map((file) => {
+      it(`should re-export ${file}`, () => {
+        const actualPath = path.join(pkgDir, file)
+        const expectedPath = path.join(expDir, path.dirname(file), 'expected.js')
 
         const actual = transformFileSync(actualPath, babelOptions).code
         const expected = fs.readFileSync(expectedPath, 'utf8')
