@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf lib",
     "build": "babel src --out-dir lib",
-    "test": "standard && mocha --require @babel/register",
+    "test": "standard && nyc --reporter=lcov mocha --require @babel/register",
     "test:watch": "npm run test -- --watch",
     "prepare": "npm run test && npm run clean && npm run build"
   },
@@ -17,9 +17,11 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@material-ui/core": "^4.4.3",
+    "coveralls": "^3.0.14",
     "glob": "^7.1.4",
-    "mocha": "^5.2.0",
-    "standard": "^14.3.1"
+    "mocha": "^8.2.0",
+    "nyc": "^15.1.0",
+    "standard": "^14.0.0"
   },
   "author": "Salman Mitha <salmanmitha@gmail.com>",
   "license": "MIT",
