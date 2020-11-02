@@ -4,18 +4,25 @@ import path from 'path'
 import glob from 'glob'
 import fs from 'fs'
 import assert from 'assert'
-import { transformFileSync } from '@babel/core'
+import {
+  transformFileSync
+} from '@babel/core'
 
 import plugin from '../src'
 
 const moduleDir = '/actual/'
 const babelOptions = {
   presets: [
-    ['@babel/env', { modules: false }],
+    ['@babel/env', {
+      modules: false
+    }],
     ['@babel/react']
   ],
   plugins: [
-    [plugin, { moduleDir, ignore: /index.js$/ }]
+    [plugin, {
+      moduleDir,
+      ignore: /index.js$/
+    }]
   ],
   sourceType: 'unambiguous',
   babelrc: false
@@ -26,9 +33,11 @@ describe('Re-exports given cjs pkg', () => {
   const expDir = path.join(__dirname, 'fixtures', 'expected', 'cjs')
 
   glob
-    .sync('*/*', { cwd: pkgDir })
+    .sync('*/*', {
+      cwd: pkgDir
+    })
     .filter(d => !d.startsWith('.'))
-    .map((file) => {
+    .forEach((file) => {
       it(`should re-export ${file}`, () => {
         const actualPath = path.join(pkgDir, file)
         const expectedPath = path.join(expDir, path.dirname(file), 'expected.js')
@@ -46,9 +55,11 @@ describe('Re-exports given es pkg', () => {
   const expDir = path.join(__dirname, 'fixtures', 'expected', 'esm')
 
   glob
-    .sync('*/*', { cwd: pkgDir })
+    .sync('*/*', {
+      cwd: pkgDir
+    })
     .filter(d => !d.startsWith('.'))
-    .map((file) => {
+    .forEach((file) => {
       it(`should re-export ${file}`, () => {
         const actualPath = path.join(pkgDir, file)
         const expectedPath = path.join(expDir, path.dirname(file), 'expected.js')
