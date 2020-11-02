@@ -66,7 +66,7 @@ describe('Re-exports given es pkg', () => {
 
         const actual = transformFileSync(actualPath, babelOptions).code
         const expected = fs.readFileSync(expectedPath, 'utf8')
-
+        console.log('test actions')
         assert.strictEqual(actual.trim(), expected.trim())
       })
     })
