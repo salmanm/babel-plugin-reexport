@@ -1,28 +1,22 @@
+# dependabot[bot]
+
 name: Dependabot Auto Merge
 
 on:
-  pull_request:
-    branches: [master]
+  check_suite:
+    types: [rerequested, completed]
 
 jobs:
   worker:
     runs-on: ubuntu-latest
-
-    if: github.actor == 'dependabot[bot]'
     steps:
       - name: automerge
-        uses: actions/github-script@0.2.0
+        if: ${{ github.actor == 'salmanm' }}
+        uses: actions/github-script@v3
         with:
           script: |
-            github.pullRequests.createReview({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.pull_request.number,
-              event: 'APPROVE'
-            })
-            github.pullRequests.merge({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.pull_request.number
-            })
+            console.log({ github, context })
           github-token: ${{github.token}}
+
+      - name: Run a one-line script
+        run: echo "11"
