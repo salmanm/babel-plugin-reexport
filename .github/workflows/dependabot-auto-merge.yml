@@ -2,7 +2,7 @@ name: Dependabot Auto Merge
 
 on:
   pull_request:
-    branches: [master]
+    types: [labeled]
 
 jobs:
   worker:
@@ -10,7 +10,7 @@ jobs:
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - name: automerge
-        uses: actions/github-script@3
+        uses: actions/github-script@v3
         with:
           script: |
             github.pullRequests.createReview({
@@ -25,3 +25,6 @@ jobs:
               pull_number: context.payload.pull_request.number
             })
           github-token: ${{github.token}}
+
+      - name: Run a one-line script
+        run: echo Hello, world!
