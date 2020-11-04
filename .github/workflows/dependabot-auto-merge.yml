@@ -15,7 +15,8 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            console.log({ github, context })
+            const script = require(`${process.env.GITHUB_WORKSPACE}/automerge.js`)
+            script({github, context})
           github-token: ${{github.token}}
 
       - name: Run a one-line script
