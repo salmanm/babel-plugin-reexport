@@ -4,7 +4,18 @@ name: Dependabot Auto Merge
 
 on:
   check_suite:
-    types: [rerequested, completed]
+    types:
+      - completed
+  pull_request:
+    types:
+      - edited
+      - labeled
+      - opened
+      - ready_for_review
+      - reopened
+      - synchronize
+      - unlabeled
+      - unlocked
 
 jobs:
   worker:
@@ -15,8 +26,7 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const script = require(`${process.env.GITHUB_WORKSPACE}/automerge.js`)
-            script({github, context})
+            console.log(context)
           github-token: ${{github.token}}
 
       - name: Run a one-line script
