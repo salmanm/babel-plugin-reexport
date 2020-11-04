@@ -29,7 +29,8 @@
     "babel",
     "plugin",
     "reexport",
-    "re-export"
+    "re-export",
+    "module"
   ],
   "standard": {
     "ignore": [
