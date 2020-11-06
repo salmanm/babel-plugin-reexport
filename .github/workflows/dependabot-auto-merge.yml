@@ -1,6 +1,9 @@
 name: auto-merge
 
 on:
+  check_suite:
+    types:
+      - completed
   pull_request:
     types:
       - edited
@@ -18,4 +21,4 @@ jobs:
     steps:
       - uses: salmanm/action-dependabot-auto-merge@master
         with:
-          github-token: ${{secrets.mytoken}}
+          github-token: ${{github.token}}
