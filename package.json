@@ -21,7 +21,7 @@
     "glob": "^7.1.4",
     "mocha": "^6.2.0",
     "nyc": "^15.1.0",
-    "standard": "^14.0.0"
+    "standard": "^16.0.1"
   },
   "author": "Salman Mitha <salmanmitha@gmail.com>",
   "license": "MIT",
