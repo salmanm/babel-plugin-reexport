@@ -13,11 +13,10 @@ module.exports = async ({ github, context }) => {
     data: pr
   } = await github.pulls.get({ owner, repo, pull_number: prNumber })
 
-  const isDependabotOwner = pr.user.login === 'dependabot[bot]'
-  const isMergable = pr.mergeable
+  const isDependabotPR = pr.user.login === 'dependabot[bot]'
 
-  if (!isDependabotOwner || !isMergable) {
-    return console.log('Unable to merge', isDependabotOwner, isMergable)
+  if (!isDependabotPR) {
+    return console.log('Unable to merge')
   }
 
   await github.pulls.createReview({
