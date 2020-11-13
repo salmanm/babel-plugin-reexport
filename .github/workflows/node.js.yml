@@ -48,7 +48,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: uses: actions/github-script@v3
+      - uses: actions/github-script@v3
         if: ${{ github.event_name == 'pull_request' }}
         with:
           github-token: ${{secrets.github_token}}
