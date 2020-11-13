@@ -11,7 +11,7 @@ npx babel ./node_modules/some-package/dir --out-dir ./export-dir --plugins=reexp
 
 #### Programatically
 
-Typically this is what you'd need to do to make sure that the path of the package you're trying to export is resolved by node.
+Typically this is what you'd need to do to make sure that the path of the package you're trying to export is resolved by node..
 
 ```js
 /* eslint-disable no-console */
