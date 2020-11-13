@@ -53,4 +53,4 @@ jobs:
         with:
           github-token: ${{secrets.github_token}}
           script: |
-            console.log(JSON.stringify(github.context.payload, null, 2))
+            console.log(JSON.stringify(context.payload, null, 2))
