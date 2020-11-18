@@ -52,4 +52,4 @@ jobs:
         if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' }}
         with:
           github-token: ${{secrets.github_token}}
-          exclude: [standard]
+          merge-method: squash
