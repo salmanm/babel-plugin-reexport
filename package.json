@@ -4,6 +4,7 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
+    "temp": "echo \"nothing\"",
     "clean": "rm -rf lib",
     "build": "babel src --out-dir lib",
     "test": "standard && nyc --reporter=lcov mocha --require @babel/register",
